@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="m1" />
         <module name="m1-java-capstone-catering-system" />
+        <module name="m01d05-command-line-programs-exercise" />
       </profile>
     </annotationProcessing>
   </component>

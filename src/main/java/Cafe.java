@@ -18,9 +18,18 @@ public class Cafe {
     double balance = 0;
     List<String> list = new ArrayList<String>();
 
+    private String path = "C:\\Users\\Student\\source\\repos\\m1\\vendingmachine.csv";
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public File getInputFile() {
-        String path = "C:\\Users\\Student\\source\\repos\\m1\\vendingmachine.csv";
+
         File inputFile = new File(path);
 
         if( !inputFile.exists() ) { // checks for the existence of a file
@@ -103,7 +112,7 @@ public class Cafe {
 
         LocalDateTime time = LocalDateTime.now();
         DecimalFormat myFormat = new DecimalFormat("#.00");
-        String str = time + " " + name + " " + beginningAmount + " " + myFormat.format(endAmount);
+        String str = String.format("%30s %20s %10s %10s", time, name, beginningAmount,  myFormat.format(endAmount));
         list.add(str);
         return list;
     }

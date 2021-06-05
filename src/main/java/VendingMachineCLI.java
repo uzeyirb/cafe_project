@@ -15,7 +15,7 @@ public class VendingMachineCLI {
     private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Catering Items";
     private static final String MAIN_MENU_OPTION_ORDER = "Order";
     private static final String MAIN_MENU_OPTION_QUIT = "Quit";
-    private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_ORDER, MAIN_MENU_OPTION_QUIT};
+    private static final String[] MAIN_MENU_OPTIONS = {MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_ORDER, MAIN_MENU_OPTION_QUIT};
     private static final String SUB_MENU_ADD_MONEY = "Add Money";
     private static final String SUB_MENU_SELECT_PRODUCT = "Select Product";
     private static final String SUB_MENU_FINISH_TRANSACTION = "Complete Transaction";
@@ -35,17 +35,19 @@ public class VendingMachineCLI {
         File file = cafe.getInputFile();
         Map<String, Product> inventoryMap = cafe.getInventory(file);
         menu.showWelcomeMessage();
-        menu.getInventoryPathFromUser();
+        String path = menu.getInventoryPathFromUser();
+        cafe.setPath(path); // path object  is going to be path for the cafe class.
 
-        while(true) {
-            String choice = (String)menu.getChoiceFromOptions(MAIN_MENU_OPTIONS, cafe.getBalance());
 
-            if(choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-                while(true) {
+        while (true) {
+            String choice = menu.getChoiceFromOptions(MAIN_MENU_OPTIONS, cafe.getBalance());
+
+            if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
+                while (true) {
                     String[] productArray = new String[inventoryMap.size()];
                     int count = 0;
                     Set<Map.Entry<String, Product>> entrySet = inventoryMap.entrySet();
-                    for (Entry<String, Product> entry: entrySet) {
+                    for (Entry<String, Product> entry : entrySet) {
                         String key = entry.getKey();
                         Product value = entry.getValue();
                         productArray[count] = key + " " + value.toString();
@@ -54,22 +56,23 @@ public class VendingMachineCLI {
                     menu.displayMenuOptionsForItems(productArray);
                     break;
                 }
-            } if(choice.equals(MAIN_MENU_OPTION_ORDER)) {
+            }
+            if (choice.equals(MAIN_MENU_OPTION_ORDER)) {
 
-                while(true) {
-                    String choice2 = (String)menu.getChoiceFromOptions(SUB_MENU_OPTIONS, cafe.getBalance());
-                    if(choice2.toUpperCase() == "R") {
+                while (true) {
+                    String choice2 = menu.getChoiceFromOptions(SUB_MENU_OPTIONS, cafe.getBalance());
+                    if (choice2.toUpperCase() == "R") {
                         break;
                     }
-                    if(choice2.equals(SUB_MENU_ADD_MONEY)) {
-                        while(true) {
+                    if (choice2.equals(SUB_MENU_ADD_MONEY)) {
+                        while (true) {
                             try {
                                 System.out.println("Enter amount you would like to add to your balance or (R)eturn to previous menu ");
 
                                 Scanner in = new Scanner(System.in);
                                 String input = in.nextLine();
 
-                                if(input.toUpperCase().equals("R")) {
+                                if (input.equalsIgnoreCase("R")) {
                                     break;
                                 } else {
                                     double amountEntered = Double.parseDouble(input);
@@ -81,26 +84,34 @@ public class VendingMachineCLI {
                             }
                         }
 
-                    } else if(choice2.equals(SUB_MENU_SELECT_PRODUCT)) {
-                        while(true) {
+                    } else if (choice2.equals(SUB_MENU_SELECT_PRODUCT)) {
+                        while (true) {
                             System.out.println("Please enter the item you would like to purchase or (R)eturn to previous menu ");
-
+                            System.out.println("Please enter product name and number of product you would like to purchase a1 #6 ");
                             Scanner in = new Scanner(System.in);
-                            String input = in.nextLine();
+                            String input = in.next().toUpperCase(); // this one helps with case issue
 
-                            if(input.toUpperCase().equals("R")) {
+
+                            if (input.equalsIgnoreCase("R")) { //
                                 break;
 
-                            } else if(inventoryMap.containsKey(input.toUpperCase())) {
-                                if(inventoryMap.get(input).isAvailableToPurchase() && cafe.balance >= inventoryMap.get(input).getPrice()) {
-                                    inventoryMap.get(input).purchaseItem();
-                                    purchasedObjects.add(inventoryMap.get(input));
-                                    cafe.balance -= inventoryMap.get(input).getPrice();
-                                    cafe.log(inventoryMap.get(input).getName(), (cafe.balance + inventoryMap.get(input).getPrice()), cafe.balance);
-                                    System.out.println("Purchase Successful" );
 
-                                } else if(!inventoryMap.get(input).isAvailableToPurchase()) {
-                                    System.out.println("ITEM HAS BEEN SOLD OUT!");
+                            }
+                            String numberOfItems = in.next();
+                            if (inventoryMap.containsKey(input)) {
+
+                                if (inventoryMap.get(input).isAvailableToPurchase() && cafe.balance >= inventoryMap.get(input).getPrice() &&
+                                        Integer.parseInt(numberOfItems) <= (inventoryMap.get(input).getNumberOfItems())) {
+                                    for (int i = 1; i <= Integer.parseInt(numberOfItems); i++) {
+                                        inventoryMap.get(input).purchaseItem();
+                                        purchasedObjects.add(inventoryMap.get(input));
+                                        cafe.balance -= inventoryMap.get(input).getPrice();
+                                        cafe.log(inventoryMap.get(input).getName(), (cafe.balance + inventoryMap.get(input).getPrice()), cafe.balance);
+                                    }
+                                    System.out.println("Purchase Successful");
+
+                                } else if (!inventoryMap.get(input).isAvailableToPurchase() || Integer.parseInt(numberOfItems) > (inventoryMap.get(input).getNumberOfItems())) {
+                                    System.out.println("THERE ARE ONLY " + inventoryMap.get(input).getNumberOfItems() + " left. Please choose only available");
                                     break;
                                 } else {
                                     System.out.println("Insufficient Funds, Please add to the balance!");
@@ -113,7 +124,7 @@ public class VendingMachineCLI {
                             }
                         }
 
-                    } else if(choice2.equals(SUB_MENU_FINISH_TRANSACTION)){
+                    } else if (choice2.equals(SUB_MENU_FINISH_TRANSACTION)) {
                         cafe.returnChange();
                         cafe.logFile();
                         cafe.balance = 0;
@@ -126,6 +137,10 @@ public class VendingMachineCLI {
 
                 }
 
+            }
+            if (choice.equals(MAIN_MENU_OPTION_QUIT)) {
+                System.out.println("Thank you for your business");
+                System.exit(0);
             }
         }
     }

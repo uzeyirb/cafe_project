@@ -18,13 +18,13 @@ public class Menu {
         this.output = new PrintWriter(output);
         this.input = new Scanner(input);
     }
-    public Object getInventoryPathFromUser(){
+    public String getInventoryPathFromUser(){
         System.out.println("Please enter file path to inventory: ");
         return input.nextLine();
     }
-    public Object getChoiceFromOptions(Object[] options, double balance) {
+    public String getChoiceFromOptions(String[] options, double balance) {
 
-        Object choice = null;
+        String choice = null;
         while(choice == null) {
 
             displayMenuOptions(options, balance);
@@ -44,14 +44,14 @@ public class Menu {
         return "";
     }
 
-    private Object getChoiceFromUserInput(Object[] options) {
+    private String getChoiceFromUserInput(String[] options) {
 
-        Object choice = null;
-        String userInput = input.nextLine();
+        String choice = null;
+        String userInput = input.nextLine().trim();
 
 
         try {
-            if(userInput.toUpperCase().equals(("R"))) {
+            if(userInput.equalsIgnoreCase("R")) {
                 choice = "R";
                 return choice;
             }
@@ -73,7 +73,7 @@ public class Menu {
 
 
 
-    private void displayMenuOptions(Object[] options, double balance) {
+    private void displayMenuOptions(String[] options, double balance) {
 
         output.println();
         for(int i = 0; i < options.length; i++) {
@@ -86,7 +86,7 @@ public class Menu {
 
         output.flush();
     }
-    public void displayMenuOptionsForItems(Object[] options) {
+    public void displayMenuOptionsForItems(String[] options) {
         output.println();
         String str = String.format("%1$-7s %2$-13s %3$7s %4$10s", "Slot", "Name", "Price", "Quantity");
         output.println(str);
