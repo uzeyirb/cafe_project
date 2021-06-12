@@ -1,6 +1,6 @@
 package com.techelevator;
 
-import com.techelevator.service.CafeService;
+import com.techelevator.service.impl.CafeServiceImpl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,10 +10,10 @@ import org.junit.Test;
 
 public class CafeTest {
 
-    CafeService cafe;
+    CafeServiceImpl cafe;
     @Before
     public void setup(){
-        cafe = new CafeService();
+        cafe = new CafeServiceImpl();
     }
 
     @After
