@@ -1,0 +1,13 @@
+What could be improved for this project?
+1. I wish I could come up with more diverse structure such as having interfaces for shopping cart, inventory, and account transactions
+2. Catering System CLI class is difficult to test using unit test.
+3. Test are being written does not cover all aspects of functionality across classes
+
+
+
+Overall the structure of the code has been divided into 5 main parts(class and class groups)
+1. Abstract class named item for in order to create objects such as Beverages, Dessert etc.
+2. Group of classes for object that extends item class
+3. Menu has main purpose to group methods related to user interaction
+4. Cafe class aims to group actions needed to cover backstage activities
+5. CLI is where main method is that runs the application, run methods uses methods from cafe, menu and item class
